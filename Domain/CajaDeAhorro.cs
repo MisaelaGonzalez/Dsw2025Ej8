@@ -3,32 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dsw2025Ej8.Excepciones;
 
 namespace Dsw2025Ej8.Domain
 {
-    internal class CajaDeAhorro : CuentaBancaria
+    public class CajaDeAhorro : CuentaBancaria
     {
-        private decimal _tasaDeInteres;
-        public void SetTasaDeInteres(decimal tasa) => _tasaDeInteres = tasa; //poner como campos
-        public decimal GetTasaDeInteres() => _tasaDeInteres;
+        public decimal TasaDeInteres { get; init; }
 
-        public CajaDeAhorro(string numero, decimal saldo, string[] titulares, decimal tasaDeInteres) : base(numero, saldo, titulares)
+        public CajaDeAhorro(string numero, decimal saldo, string[] titulares) : base(numero, saldo, titulares)
         {
-            _tasaDeInteres = tasaDeInteres;
         }
-        public override void Depositar(decimal monto)
+        public override void Depositar(decimal _monto)
         {
-            //throw new NotImplementedException();
-            _saldo += monto;
+            EstadoDeCuenta(Estado);
+            ValidarMonto(_monto);
+            Saldo += _monto;
         }
-        public override void Retirar(decimal monto)
+        public override void Retirar(decimal _monto)
         {
-            //throw new NotImplementedException();
-            _saldo -= +monto;
+            EstadoDeCuenta(Estado);
+            ValidarMonto(_monto);
+            SaldoDeCuenta(_monto);
         }
         public override void AplicarInteres()
         {
-            _saldo += _saldo * _tasaDeInteres;
+            if (TasaDeInteres <= 0) throw new InvalidOperationException("La tasa de interes debe ser mayor que 0");
+
+            Saldo += Saldo * TasaDeInteres;
+        }
+        public void SaldoDeCuenta(decimal _monto)
+        {
+            if (Saldo - _monto < 0)
+            {
+                Estado = Estado.Suspendida;
+                throw new SaldoInsuficienteException(Numero);
+            }
+            else
+            {
+                Saldo -= +_monto;
+            }
         }
 
     }
