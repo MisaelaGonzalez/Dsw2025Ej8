@@ -7,7 +7,7 @@ using Dsw2025Ej8.Excepciones;
 
 namespace Dsw2025Ej8.Domain
 {
-    internal class CuentaCorriente : CuentaBancaria
+    public class CuentaCorriente : CuentaBancaria
     {
         public decimal LimiteDeDescubierto {  get; init; }
         public decimal Comision {  get; init; }
@@ -17,14 +17,14 @@ namespace Dsw2025Ej8.Domain
         }
         public override void Depositar(decimal _monto)
         {
-            EstadoDeCuenta(Estado);
+            ValidarEstadoActivo(Estado);
             ValidarMonto(_monto);
             _monto -= _monto * Comision;
             Saldo += _monto;
         }
         public override void Retirar(decimal _monto)
         {
-            EstadoDeCuenta(Estado);
+            ValidarEstadoActivo(Estado);
             ValidarMonto(_monto);
 	    if (Saldo - _monto >= -LimiteDeDescubierto)
             {
@@ -36,6 +36,8 @@ namespace Dsw2025Ej8.Domain
             }
         }
 
-        public override void AplicarInteres(){}
+        public override void AplicarInteres(){
+        //las cuentas corrientes no generan interes
+        }
     }
 }

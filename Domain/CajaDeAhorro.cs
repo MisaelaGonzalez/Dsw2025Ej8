@@ -16,15 +16,15 @@ namespace Dsw2025Ej8.Domain
         }
         public override void Depositar(decimal _monto)
         {
-            EstadoDeCuenta(Estado);
+            ValidarEstadoActivo(Estado);
             ValidarMonto(_monto);
             Saldo += _monto;
         }
         public override void Retirar(decimal _monto)
         {
-            EstadoDeCuenta(Estado);
+            ValidarEstadoActivo(Estado);
             ValidarMonto(_monto);
-            SaldoDeCuenta(_monto);
+            VerificarSaldoCuenta(_monto);
         }
         public override void AplicarInteres()
         {
@@ -32,7 +32,7 @@ namespace Dsw2025Ej8.Domain
 
             Saldo += Saldo * TasaDeInteres;
         }
-        public void SaldoDeCuenta(decimal _monto)
+        private void VerificarSaldoCuenta(decimal _monto)
         {
             if (Saldo - _monto < 0)
             {
